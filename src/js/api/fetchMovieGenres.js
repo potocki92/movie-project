@@ -1,8 +1,6 @@
-import { fetchMovieGenres } from './fetchMovieGenres';
-
-const fetchMovies = name => {
+const fetchMovieGenres = id => {
   const API_KEY = '64cb7e9375c055230d64b013c4bca79f';
-  const API_URL = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${name}`;
+  const API_URL = `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=en-US`;
 
   return fetch(API_URL)
     .then(response => {
@@ -18,18 +16,12 @@ const fetchMovies = name => {
       return response.json();
     })
     .then(data => {
-      const movieIds = data.results.map(movie => movie.id);
-      const promises = movieIds.map(id => fetchMovieGenres(id));
-      return Promise.all(promises).then(genres => {
-        return data.results.map((movie, index) => ({
-          ...movie,
-          genres: genres[index],
-        }));
-      });
+      return data.genres;
     })
     .catch(error => {
       console.error(error);
       return Promise.reject(new Error('An error occurred while fetching the data.'));
     });
 };
-export { fetchMovies };
+
+export { fetchMovieGenres };

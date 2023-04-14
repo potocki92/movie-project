@@ -5,8 +5,8 @@ const searchMovies = () => {
 
   fetchMovies(searchValue)
     .then(movies => {
-      console.log('Movies:', movies);
-      // Tutaj możesz wyświetlić pobrane filmy w interfejsie użytkownika
+      const markup = renderList(movies);
+      document.getElementById('main').innerHTML = markup;
     })
     .catch(error => {
       console.error('Error:', error);
@@ -16,5 +16,27 @@ const searchMovies = () => {
 
 const button = document.getElementById('button');
 button.addEventListener('click', searchMovies);
+
+const renderList = movies => {
+  const markup = movies
+    .map(movie => {
+      const tags = movie.genres.map(genre => genre.name).join(', ');
+      return (
+        `<div class="movie-card">
+          <img
+            src="https://image.tmdb.org/t/p/w500/${movie.poster_path}"
+            alt="${tags}"
+            loading="lazy"
+          />
+          <div class="info">
+            <p class="movie__title">${movie.original_title}</p> <p class="movie__genres">${tags}</p>
+          </div>
+        </div>`
+      );
+    })
+    .join('');
+
+  return markup;
+};
 
 export { searchMovies };
